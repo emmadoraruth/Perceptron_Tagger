@@ -1,0 +1,55 @@
+Emma Ziegellaub Eichler - edz2103@columbia.edu
+COMS W4705 - Natural Language Processing
+Programming Assignment 4 Report
+
+4)
+Part 1: To tag a file using a pre-trained model, run:
+	"python nlp4.py tag model untagged_file tagged_file"
+Specifically, run:
+	"python nlp4.py tag tag.model tag_dev.dat p4.results"
+where the output will be written to 'p4.results'.
+Part 2: This model has 90.52% accuracy when used to tag the development data.
+Part 3: While this demonstrates that bigram tag sequences and word-tag pairs can be used alone to achieve good accuracy in part-of-speech tagging, they do not produce great accuracy because they do not take into account features of the words other than the entire words themselves.  This is especially a problem for unseen words, which will then be tagged using only bigram tag sequences, completely irrespective of the words themselves.
+
+5)
+Part 1: To train a model using five iterations of the Perceptron algorithm and BIGRAM, TAG, and SUFFIX features, run:
+	"python nlp4.py train training_data model"
+Specifically, if you want to write the model to 'suffix_tagger.model', run:
+	"python nlp4.py train tag_train.dat suffix_tagger.model"
+Then, to use this model to tag a file, run the same command from part (4) with the new model:
+	"python nlp4.py tag suffix_tagger.model tag_dev.dat p5.results"
+where the output will be written to 'p5.results'.
+Part 2: This model has 92.11% accuracy when used to tag the development data.
+Part 3: Adding suffix features increases the model's accuracy on the development data by about 1.6%.  Its performance improves especially on unknown words, because it provides tags based on additional information specific to the word itself.  Tags are now based partially on characteristics of unseen words, instead of being solely determined by the preceding tag.  Suffixes help in particular in tagging adverbs, verbs, and plural nouns, which tend to be limited to a small set of ending character sequences.  They are less helpful, however, in improving the performance on other categories, such as singular nouns and adjectives, which can end in almost any character sequence.
+
+6)
+Part 1: To train a model using five iterations of the Perceptron algorithm and experimental features, run:
+	"python nlp4.py p6 training_data model f"
+Each set of features has a numerical code, f, as follows:
+	0: BIGRAM, TAG (part 4 features)
+	1: BIGRAM, TAG, SUFFIX (part 5 features)
+	2: BIGRAM, TAG, PREFIX (prefix works the same way as suffix, except for the beginning of a word)
+	3: BIGRAM, TAG, PREFIX, SUFFIX
+	4: BIGRAM, TAG, LEN (len is the length of a word)
+	5: BIGRAM, TAG, CASE (case can be upper, lower, sentence/camel, numeric, punctuation, or mixed (upper/lower or alphanumeric))
+	6: BIGRAM, TAG, SUFFIX, CASE
+	7: BIGRAM, TAG, PREFIX, CASE
+Specifically, if you want to write the model to 'f_tagger.model' with your choice of f, run:
+	"python nlp4.py p6 tag_train.dat f_tagger.model f"
+Then, to use this model to tag a file, run the same command from part (4) with the new model:
+	"python nlp4.py tag f_tagger.model tag_dev.dat p6_f.results"
+where the output will be written to 'p6_f.results'.
+Part 2: Accuracy of the model with the different feature sets (in addition to BIGRAM/TAG):
+	2: PREFIX: 91.26%
+	3: PREFIX, SUFFIX: 91.99%
+	4: LEN: 89.79%
+	5: CASE: 91.30%
+	6: BIGRAM, TAG, SUFFIX, CASE: 93.45%
+	7: BIGRAM, TAG, PREFIX, CASE: 92.19%
+Part 3: From these results, we can conclude the following:
+- Adding prefixes to the initial BIGRAM/TAG features increases performance by about 0.75%, so prefixes seem to be somewhat correlated to tag, but less so than suffixes
+- Using both prefixes and suffixes is better (by about 0.75%) than using just prefixes, but actually slightly worse than just using suffixes alone (by about 0.1%)
+- Using the length feature decreases performance from just using the BIGRAM/TAG features by about 0.75%, suggesting length is uncorrelated to tag
+- Using case improves performance by about 0.8% from BIGRAM/TAG, suggesting a correlation between case and tag
+- Using case and suffixes together yields the best performance (about 2.95% above BIGRAM/TAG, 2.15% above BIGRAM/TAG/CASE, and 1.35% above BIGRAM/TAG/SUFFIX), suggesting that case and suffix are probably correlated to different tags from each other
+- Using case and prefixes together yield the second best performance but is significantly worse (about 1.25%) than SUFFIX/CASE and not significantly better (about 0.1%) than SUFFIX alone. This suggests that case and prefix are probably correlated to different tags from each other; however, again, suffixes are a much better indicator of tag than prefixes

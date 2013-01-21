@@ -1,0 +1,42 @@
+\documentclass[twoside]{homework}
+
+\studname{Emma Ziegellaub Eichler}
+\studmail{edz2103@columbia.edu}
+\coursename{Natural Language Processing}
+\hwNo{4}
+
+\usepackage{amssymb}
+\usepackage{dsfont}
+
+\begin{document}
+\maketitle
+
+\section*{Problem 1}
+\subsection*{a}
+Since $f_1(x,y) = f_2(x,y)$, we have either $f(x,y) = (0,0)$ or $f(x,y) = (1,1)$.  Let $k$ be the number of examples in the training sample such that $f(x,y) = (1,1)$.  Then $n-k$ is the number of examples in the training sample such that $f(x,y) = (0,0)$. Consider $v' = (v_1,v_2)$.  Then we have $L(v') = \Sigma_ilogP(y_i|x_i,v') - c\Sigma_kv_k^2 = \Sigma_ilog \frac{e^{v' \cdot f(x,y)}}{\Sigma_{y' \in V}e^{v \cdot f(x,y')}} - c\Sigma_kv_k^2 = klog \frac{e^{v_1+v_2}}{ke^{v_1+_2}+n-k} + (n-k)log \frac{1}{ke^{v_1+v_2}+n-k} - c(v_1^2+v_2^2) = k(v_1+v_2) - klog(ke^{v_1+v_2}+n-k) + (n-k)log(1) + (k-n)log(ke^{v_1+v_2}+n-k) - c(v_1^2+v_2^2) = k(v_1+v_2) - nlog(ke^{v_1+v_2}+n-k) - c(v_1^2+v_2^2)$.  Let $\alpha = \frac{v_2-v_1}{2}$.  Then $\alpha + v_1 = \frac{v_2+v_1}{2}$ and $-\alpha + v_2 = \frac{v_2+v_1}{2}$.  Since $k(v_1+v_2) - nlog(ke^{v_1+v_2}+n-k)$ is influenced only by $v_1+v_2$ and not $v_1$ and $v_2$ individually, to show $v^*$ satisfies $v_1 = v_2$, we need only show that $v_1^2+v_2^2$ is minimized by $\alpha = 0$.  Let $v = \frac{v_2+v_1}{2}$.  Then $v_1^2+v_2^2 = (v+\alpha)^2 + (v-\alpha^2) = 2v^2 - 2v\alpha + 2v\alpha + 2\alpha^2 = 2v^2 + 2\alpha^2$.  Since $2\alpha^2 \geq 0$, this is indeed minimized when $\alpha = 0$, so $v^*$ satisfies $v^*_1 = v^*_2$.
+$\square$
+\subsection*{b}
+Now we define $L(v) = \Sigma_ilogP(y_i|x_i,v) - c\Sigma_k|v_k|$.  As before, we let $k$ be the number of examples in the training sample such that $f(x,y) = (1,1)$, so $n-k$ is the number of examples in the training sample such that $f(x,y) = (0,0)$.  Again, consider $v' = (v_1,v_2)$.  Then we have $L(v') = \Sigma_ilogP(y_i|x_i,v') - c\Sigma_k|v_k| = \Sigma_ilog \frac{e^{v' \cdot f(x,y)}}{\Sigma_{y' \in V}e^{v \cdot f(x,y')}} - c\Sigma_k|v_k| = klog \frac{e^{v_1+v_2}}{ke^{v_1+_2}+n-k} + (n-k)log \frac{1}{ke^{v_1+v_2}+n-k} - c(|v_1|+|v_2|) = k(v_1+v_2) - klog(ke^{v_1+v_2}+n-k) + (n-k)log(1) + (k-n)log(ke^{v_1+v_2}+n-k) - c(|v_1|+|v_2|) = k(v_1+v_2) - nlog(ke^{v_1+v_2}+n-k) - c(|v_1|+|v_2|)$.  Once more, let $\alpha = \frac{v_2-v_1}{2}$.  Then $\alpha + v_1 = \frac{v_2+v_1}{2}$ and $-\alpha + v_2 = \frac{v_2+v_1}{2}$.  Since $k(v_1+v_2) - nlog(ke^{v_1+v_2}+n-k)$ is influenced only by $v_1+v_2$ and not $v_1$ and $v_2$ individually, we seek to find $\alpha$ that minimizes $|v_1|+|v_2|$.  Let $v = \frac{v_2+v_1}{2}$.  For $-\alpha_1 < v < \alpha_1$, $|2v| < |v+\alpha_1| + |v-\alpha_1|$, for $-v \leq \alpha_2 \leq v$, $|2v| = |v+\alpha_2| + |v-\alpha_2|$, and $|v+\alpha_1| > |v+\alpha_2|$, so $\alpha_2$ minimizes $|v_1|+|v_2|$.  Thus, $v^*$ satisfies $-v^*_1-v^*_2 \leq v^*_1-v^*_2 \leq v^*_1+v^*_2$.
+$\square$
+
+\section*{2}
+Since $v^* = argmax_vL(v)$, $L'(v^*) = 0$.  We know $\frac{dL(v)}{dv_k} = \Sigma_{i=1}^nf_k(x_i,y_i) - \Sigma_{i=1}^n\Sigma_{y \in Y}P(y|x_i,v^*)f_k(x_i,y)$, so we set $\Sigma_{i=1}^nf_k(x_i,y_i) - \Sigma_{i=1}^n\Sigma_{y \in Y}P(y|x_i,v^*)f_k(x_i,y) = 0$.  Since $f_k(x_i,y_i) = 1$ if and only if $x_i = x_k$ and $y_i = y_k$ (and $f_k(x_i,y_i) = 0$ otherwise), $\Sigma_{i=1}^nf_k(x_i,y_i) = Count(x_k,y_k)$.  Since $\Sigma_{y \in Y}P(y|x_i,v^*)f_k(x_i,y) = 0$ if $x_i \neq x_k$ and $\Sigma_{y \in Y}P(y|x_i,v^*)f_k(x_i,y) = \Sigma_{y \in Y}P(y|x_k,v^*)f_k(x_k,y)$ if $x_i = x_k$, $\Sigma_{i=1}^n\Sigma_{y \in Y}P(y|x_i,v^*)f_k(x_i,y) = Count(x_k)\Sigma_{y \in Y}P(y|x_k,v^*)f_k(x_k,y)$.  If we take $P(x|y,v) = \frac{Count(x.y)}{Count(x)}$, we have $Count(x_k)\Sigma_{y \in Y}P(y|x_k,v^*)f_k(x_k,y) = Count(x_k)\Sigma_{y \in Y}\frac{Count(x_k,y)}{Count(x_k)} f_k(x_k,y) = Count(x_k)\frac{1}{Count(x_k)}\Sigma_{y \in Y}Count(x_k,y)f_k(x_k,y) = \Sigma_{y \in Y}Count(x_k,y)f_k(x_k,y)$.  Since $f_k(x_k,y) = 1$ if $y = y_k$ and $f_k(x_k,y) = 0$ if $y \neq y_k$, $\Sigma_{y \in Y}Count(x_k,y)f_k(x_k,y) = Count(x_k,y_k)$.  Then $\frac{dL(v)}{dv_k} = Count(x_k,y_k) - Count(x_k,y_k) = 0$.  Since $L(v)$ is concave, it has one maximum and no minimum, so we have found the global maximum, $v^*$, and therefore it must satisfy $P(x|y,v^*) = \frac{Count(x,y)}{Count(x)}$.
+$\square$
+
+\section*{3}
+\subsection*{a}
+We choose the log-linear model with inputs $X = V$, labels $Y = V \bigcup	V'$, $d = 2$, function $f: X x Y \rightarrow \mathsf{R}^2$ where $f(x,y) = (f_1(x,y),f_2(x,y))$, $f_1(x,y) = 1$ if $x = y$ and $f_1(x,y) = 0$ if $x \neq y$, and   $f_2(x,y) = 1$ if $x = y'$ and $f_2(x,y) = 0$ if $x \neq y'$.
+\subsection*{b}
+Using model defined above, $f(x,x) = (1,0)$, $f(x,x') = (0,1)$, $f(x,y) = (0,0)$ where $y \notin \{x,x'\}$.  Then we also have $\Sigma_{y \in Y}e^{(v_1,v_2) \cdot f(x,y)} = (v_1,v_2) \cdot (0,0) + e^{(v_1,v_2) \cdot (1,0)} + e^{(v_1,v_2) \cdot (0,1)}$, $\forall x \in X$ where the parameter vector $v = (v_1,v_2)$.  Using these substitutions and the probabilities given in the problem, we have the following equations: \\
+$P(the|the) = \frac{e^{(v_1,v_2)\cdot(1,0)}}{(|V'|-2)e^{(v_1,v_2)\cdot(0,0)}+e^{(v_1,v_2)\cdot(1,0)}+e^{(v_1,v_2)\cdot(0,1)}} = 0.4$ \\
+$P(eht|the) = \frac{e^{(v_1,v_2)\cdot(0,1)}}{(|V'|-2)e^{(v_1,v_2)\cdot(0,0)}+e^{(v_1,v_2)\cdot(1,0)}+e^{(v_1,v_2)\cdot(0,1)}} = 0.3$ \\
+$P(dog|the) = \frac{e^{(v_1,v_2)\cdot(0,0)}}{(|V'|-2)e^{(v_1,v_2)\cdot(0,0)}+e^{(v_1,v_2)\cdot(1,0)}+e^{(v_1,v_2)\cdot(0,1)}} = \frac{0.3}{|V'|-2}$ 
+\subsection*{c}
+Using the equations from the previous part, we evaluate $e^{(v_1,v_2)\cdot(0,0)} = e^0 = 1$, $e^{(v_1,v_2)\cdot(1,0)} = e^{v_1}$, $e^{(v_1,v_2)\cdot(0,1)} = e^{v_2}$ and substitute, giving us the following equations: \\
+$\frac{1}{|V'|-2+e^{v_1}+e^{v_2}} = \frac{3}{10(|V'|-2)}$ \\
+$\frac{e^{v_2}}{|V'|-2+e^{v_1}+e^{v_2}} = \frac{3}{10}$ \\
+$\frac{e^{v_2}}{|V'|-2+e^{v_1}+e^{v_2}} = \frac{4}{10}$ \\
+Then $|V'|-2+e^{v_1}+e^{v_2} = \frac{10(|V'|-2)}{3}$, so solving for $v_1$ and $v_2$ and substituting this in yields: $v_2 = ln(|V'|-2)$ and $v_1 = ln(\frac{4}{3}) + ln(|V'|-2)$. \\
+Then our parameter vector $v = (v_1,v_2) = (ln(\frac{4}{3}) + ln(|V'|-2), ln(|V'|-2))$.
+
+\end{document}
